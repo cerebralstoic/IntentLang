@@ -1,25 +1,20 @@
-#include "Token.h"
+#include "Lexer.h"
 #include <fstream>
 #include <cctype>
 #include <unordered_map>
 #include<iostream>
 using namespace std;
 
-class Lexer{
-    ifstream file;
-    char currentChar;
-    int line;
-    public:
-        Lexer(const string & filename) :line(1){
+Lexer::Lexer(const string & filename) :line(1){
             file.open(filename);
             if (!file.is_open()) {
                  cout<< "ERROR: Cannot open file!"<<endl;
             exit(1);
             }
             currentChar = file.get();
-        }
+}
 
-        Token getNextToken(){
+Token Lexer::getNextToken(){
             while(isspace(currentChar)){
                 if(currentChar == '\n'){
                     line ++;
@@ -79,8 +74,7 @@ class Lexer{
 
         }
 
-        private:
-            Token keywordOrIdentifier(const string & word){
+Token Lexer::keywordOrIdentifier(const string & word){
                 static unordered_map<string, TokenType> keywords ={
                     {"goal",TokenType::GOAL},
                     {"input",TokenType::INPUT},
@@ -98,4 +92,3 @@ class Lexer{
                 return {TokenType::IDENTIFIER,word,line};
             }
 
-};
