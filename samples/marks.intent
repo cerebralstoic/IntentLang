@@ -1,14 +1,14 @@
 goal: grade_evaluator
 
-input: 
+input:
     marks
+
 constraints:
     marks range 0 to 100
-    fail if marks <40
-    grade A if marks >=85
-    grade B if marks >=70
+    fail if marks < 40
+    grade A if marks >= 85
+    grade B if marks >= 70
     grade C otherwise
 
-
-Output:
+output:
     grade
