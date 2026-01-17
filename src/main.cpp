@@ -1,18 +1,13 @@
+#include "lexer/Lexer.h"
+#include "parser/Parser.h"
 #include <iostream>
-#include "lexer/Lexer.cpp"
-
-using namespace std;
 
 int main() {
     Lexer lexer("../samples/marks.intent");
+    Parser parser(lexer);
 
-    Token token;
-    do {
-        token = lexer.getNextToken();
-        cout << "TOKEN: " << (int)token.type 
-             << " | LEXEME: [" << token.lexeme << "]"
-             << " | LINE: " << token.line << endl;
-    } while (token.type != TokenType::EOF_TOKEN);
+    ASTNode* ast = parser.parseProgram();
+    std::cout << "Parsing successful.\n";
 
     return 0;
 }
