@@ -48,18 +48,55 @@ ASTNode* Parser::parseInput() {
     match(TokenType::INPUT);
     match(TokenType::COLON);
     ASTNode* node = new ASTNode("Input");
-    node->children.push_back(parseVarList());
+    while (
+        currentToken.type == TokenType::INT_TYPE ||
+        currentToken.type == TokenType::FLOAT_TYPE ||
+        currentToken.type == TokenType::STRING_TYPE ||
+        currentToken.type == TokenType::BOOL_TYPE
+    ) {
+        node->children.push_back(parseVarList());
+    }
+
     return node;
 }
 
 ASTNode* Parser::parseVarList() {
     ASTNode* node = new ASTNode("VarList");
-    node->children.push_back(new ASTNode("Var", currentToken.lexeme));
+    string type;
+    if (currentToken.type == TokenType::INT_TYPE) {
+        type = "int";
+        match(TokenType::INT_TYPE);
+    }
+    else if (currentToken.type == TokenType::FLOAT_TYPE) {
+        type = "float";
+        match(TokenType::FLOAT_TYPE);
+    }
+    else if (currentToken.type == TokenType::STRING_TYPE) {
+        type = "string";
+        match(TokenType::STRING_TYPE);
+    }
+    else if (currentToken.type == TokenType::BOOL_TYPE) {
+        type = "bool";
+        match(TokenType::BOOL_TYPE);
+    }
+    else {
+        cerr << "Syntax error at line "
+             << currentToken.line
+             << " expected type (int/float/string/bool)"
+             << endl;
+        exit(1);
+    }
+    string varName = currentToken.lexeme;
     match(TokenType::IDENTIFIER);
+
+    ASTNode* varNode = new ASTNode("Var", varName, type);
+    node->children.push_back(varNode);
+
     if (currentToken.type == TokenType::COMMA) {
         match(TokenType::COMMA);
         node->children.push_back(parseVarList());
     }
+
     return node;
 }
 
@@ -73,8 +110,7 @@ ASTNode* Parser::parseConstraints() {
 
 ASTNode* Parser::parseConstraintList() {
     ASTNode* node = new ASTNode("ConstraintList");
-    while (currentToken.type != TokenType::OUTPUT &&
-           currentToken.type != TokenType::EOF_TOKEN) {
+    while (currentToken.type == TokenType::IDENTIFIER) {
         node->children.push_back(parseConstraint());
     }
     return node;
@@ -163,10 +199,39 @@ ASTNode* Parser::parseCondition() {
     return node;
 }
 
+ASTNode* Parser::parseOutputVarList() {
+
+    ASTNode* node = new ASTNode("VarList");
+
+    if (currentToken.type != TokenType::IDENTIFIER) {
+        cerr << "Syntax error at line "
+             << currentToken.line
+             << " expected output variable name"
+             << endl;
+        exit(1);
+    }
+
+    node->children.push_back(
+        new ASTNode("Var", currentToken.lexeme)
+    );
+
+    match(TokenType::IDENTIFIER);
+
+    if (currentToken.type == TokenType::COMMA) {
+        match(TokenType::COMMA);
+        node->children.push_back(parseOutputVarList());
+    }
+
+    return node;
+}
+
 ASTNode* Parser::parseOutput() {
     match(TokenType::OUTPUT);
     match(TokenType::COLON);
+
     ASTNode* node = new ASTNode("Output");
-    node->children.push_back(parseVarList());
+
+    node->children.push_back(parseOutputVarList());
+
     return node;
 }

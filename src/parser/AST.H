@@ -9,9 +9,10 @@ using namespace std;
 struct ASTNode {
     string nodeType;
     string value;
+    string dataType;
     vector<ASTNode*> children;
 
-    ASTNode(const string &type, const string & val = "")
+    ASTNode(const string &type, const string & val = "", const string & dt = "")
         : nodeType(type), value(val){}
 };
 
