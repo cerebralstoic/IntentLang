@@ -29,6 +29,7 @@ class Parser{
         ASTNode* parseAction();
         ASTNode* parseCondition();
         ASTNode* parseOutput();
+        ASTNode* parseOutputVarList();
 };
 
 

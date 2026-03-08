@@ -11,6 +11,9 @@ struct TAC{
     string arg1;
     string arg2;
     string result;
+
+    TAC(string o, string a1="", string a2="", string r="")
+        : op(o), arg1(a1), arg2(a2), result(r) {}
 };
 
 

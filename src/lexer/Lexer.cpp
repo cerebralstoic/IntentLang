@@ -83,7 +83,12 @@ Token Lexer::keywordOrIdentifier(const string & word){
                     {"range",TokenType::RANGE},
                     {"to",TokenType::TO},
                     {"if",TokenType::IF},      
-                    {"otherwise",TokenType::OTHERWISE}             
+                    {"otherwise",TokenType::OTHERWISE},
+                    
+                    {"int",TokenType::INT_TYPE},
+                    {"float",TokenType::FLOAT_TYPE},
+                    {"string",TokenType::STRING_TYPE},
+                    {"bool",TokenType::BOOL_TYPE},             
                 };
 
                 if(keywords.count(word))

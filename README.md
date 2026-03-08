@@ -47,7 +47,8 @@ Example intent:
 goal: grade_evaluator
 
 input:
-    marks
+    marks, bonus
+    string name
 
 constraints:
     marks range 0 to 100
@@ -57,7 +58,7 @@ constraints:
     grade C otherwise
 
 output:
-    grade
+    string grade
 ```
 The compiler verifies the logic and generates equivalent **C code**.
 

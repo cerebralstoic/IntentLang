@@ -3,12 +3,17 @@
 
 int main() {
     int marks;
-    char result[10];
     scanf("%d", &marks);
-    if (marks < 40) strcpy(result, "fail");
-    else if (marks >= 85) strcpy(result, "A");
-    else if (marks >= 70) strcpy(result, "B");
-    else strcpy(result, "C");
-    printf("%s", result);
+    float attendance;
+    scanf("%f", &attendance);
+
+    char grade[20];
+
+    if (marks < 40) strcpy(grade, "fail");
+    else if (attendance < 75) strcpy(grade, "fail");
+    else if (marks >= 85) strcpy(grade, "A");
+    else if (marks >= 70) strcpy(grade, "B");
+    else strcpy(grade, "C");
+    printf("%s\n", grade);
     return 0;
 }
