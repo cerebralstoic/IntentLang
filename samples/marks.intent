@@ -1,12 +1,15 @@
 goal: grade_evaluator
 
 input:
-    int marks;
-    float attendance;
+    int marks
+    float attendance
 
 constraints:
     marks range 0 to 100
+    attendance range 0 to 100
+
     fail if marks < 40
+    fail if attendance < 75
     grade A if marks >= 85
     grade B if marks >= 70
     grade C otherwise
