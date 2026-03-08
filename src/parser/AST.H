@@ -13,7 +13,7 @@ struct ASTNode {
     vector<ASTNode*> children;
 
     ASTNode(const string &type, const string & val = "", const string & dt = "")
-        : nodeType(type), value(val){}
+        : nodeType(type), value(val), dataType(dt) {}
 };
 
 #endif
