@@ -6,7 +6,9 @@
 #include <vector>
 
 class CGenerator {
+
     std::vector<std::string> lines;
+    std::string outputVar;
 
 public:
     void generate(ASTNode* root);
@@ -14,6 +16,9 @@ public:
 
 private:
     void visit(ASTNode* node);
+
+    void generateInputs(ASTNode* root);
+    void generateOutputs(ASTNode* root);
 };
 
 #endif
