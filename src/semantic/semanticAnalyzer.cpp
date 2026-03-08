@@ -32,8 +32,27 @@ void SemanticAnalyzer::visit(ASTNode* node){
 }
 
 void SemanticAnalyzer::handleInput(ASTNode* node){
-    for(auto varNode: node->children[0]->children){
-        inputVars[varNode->value] = true;
+
+    for(auto varList : node->children){
+
+        for(auto varNode : varList->children){
+
+            string name = varNode->value;
+            string type = varNode->dataType;
+
+            if(inputVars.count(name)){
+                cerr << "Semantic error: duplicate variable '"
+                     << name << "'" << endl;
+                exit(1);
+            }
+
+            inputVars[name] = true;
+
+            Symbol sym;
+            sym.name = name;
+            sym.type = type;
+            symbolTable[name] = sym;
+        }
     }
 }
 

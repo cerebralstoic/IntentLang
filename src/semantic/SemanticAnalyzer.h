@@ -6,9 +6,14 @@
 #include <string>
 
 using namespace std;
+struct Symbol{
+    string name;
+    string type;
+};
 class SemanticAnalyzer {
     unordered_map<string, bool> inputVars;
     unordered_map<string, pair<int,int>> ranges;
+    unordered_map<string, Symbol> symbolTable;
     bool otherwiseSeen;
 
 
