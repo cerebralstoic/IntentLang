@@ -2,13 +2,28 @@
 #include <algorithm>
 
 using namespace std;
-
 string NLPProcessor::convertToDSL(const string& input) {
 
     string s = input;
 
-    
     transform(s.begin(), s.end(), s.begin(), ::tolower);
+    if (s.find("otherwise") != string::npos && s.find("grade") != string::npos && s.find("assign") == string::npos) {
+        return input;
+    }
+    if (s.find(" if ") != string::npos || s.find(" range    ") != string::npos) {
+        return input;
+    }
+
+    if (s.find(" if ") != string::npos || 
+        s.find(" range ") != string::npos) {
+        return input;
+    }
+
+    if (s.find("between") != string::npos && s.find("and") != string::npos) {
+        int a, b;
+        sscanf(s.c_str(), "marks between %d and %d", &a, &b);
+        return "marks range " + to_string(a) + " to " + to_string(b);
+    }
 
     if (s.find("greater than or equal to") != string::npos)
         s.replace(s.find("greater than or equal to"), 27, ">=");
@@ -19,17 +34,45 @@ string NLPProcessor::convertToDSL(const string& input) {
     if (s.find("less than") != string::npos)
         s.replace(s.find("less than"), 9, "<");
 
+    if (s.find("otherwise") != string::npos) {
+
+        if (s.find("assign grade") != string::npos)
+            s.replace(s.find("assign grade"), 12, "grade");
+
+        size_t pos = s.find("grade");
+
+        if (pos != string::npos) {
+            string action = s.substr(pos);
+
+            if (action.size() > 6)
+                action[6] = toupper(action[6]);
+
+            return action + " otherwise";
+        }
+    }
+
+    if (s.find("fail") != string::npos) {
+
+        if (s.find("then") != string::npos)
+            s.erase(s.find("then"), 4);
+
+        if (s.find("if") != string::npos)
+            s.erase(s.find("if"), 2);
+
+        size_t pos = s.find("fail");
+        string condition = s.substr(0, pos);
+
+        return "fail if " + condition;
+    }
+
     if (s.find("assign grade") != string::npos)
         s.replace(s.find("assign grade"), 12, "grade");
-
-    if (s.find("if") != string::npos)
-        s.erase(s.find("if"), 2);
 
     if (s.find("then") != string::npos)
         s.erase(s.find("then"), 4);
 
-    if (s.find("are") != string::npos)
-        s.erase(s.find("are"), 3);
+    if (s.find("if") != string::npos)
+        s.erase(s.find("if"), 2);
 
     size_t pos = s.find("grade");
 
@@ -37,8 +80,11 @@ string NLPProcessor::convertToDSL(const string& input) {
         string condition = s.substr(0, pos);
         string action = s.substr(pos);
 
+        if (action.size() > 6)
+            action[6] = toupper(action[6]);
+
         return action + " if " + condition;
     }
 
-    return s;
+    return input;
 }

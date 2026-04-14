@@ -9,19 +9,49 @@
 
 int main() {
     NLPProcessor nlp;
-    string input;
-    cout<<"Enter rule in natural language:";
-    getline(cin, input);
 
-    string dslRule = nlp.convertToDSL(input);
+    vector<string> inputs;
+    string line;
+
+    cout << "Enter rules (type END to finish):\n";
+
+    while (true) {
+        getline(cin, line);
+        if (line == "END") break;
+        if (!line.empty())
+            inputs.push_back(line);
+    }
+
+    vector<string> dslRules;
+
+    for (auto &inp : inputs) {
+        string rule = nlp.convertToDSL(inp);
+        cout << "DSL: " << rule << endl;
+        dslRules.push_back(rule);
+    }
 
     ofstream out("../samples/generated.intent");
 
     out << "goal: test\n\n";
     out << "input:\n    int marks\n\n";
+
     out << "constraints:\n";
-    out << "    marks range 0 to 100\n";
-    out << "    " << dslRule << "\n\n";
+    bool hasRange = false;
+
+    for (auto &rule : dslRules) {
+        if (rule.find("range") != string::npos)
+            hasRange = true;
+    }
+    
+    if (!hasRange) {
+        out << "    marks range 0 to 100\n";
+    }
+    
+    for (auto &rule : dslRules) {
+        out << "    " << rule << "\n";
+    }
+
+    out << "\n";
     out << "output:\n    grade\n";
 
     out.close();
