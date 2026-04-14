@@ -4,9 +4,28 @@
 #include "ir/IRGenerator.h"
 #include "codegen/CGenerator.h"
 #include <iostream>
+#include "nlp/NLPProcessor.h"
+#include <fstream>
 
 int main() {
-    Lexer lexer("../samples/marks.intent");
+    NLPProcessor nlp;
+    string input;
+    cout<<"Enter rule in natural language:";
+    getline(cin, input);
+
+    string dslRule = nlp.convertToDSL(input);
+
+    ofstream out("../samples/generated.intent");
+
+    out << "goal: test\n\n";
+    out << "input:\n    int marks\n\n";
+    out << "constraints:\n";
+    out << "    marks range 0 to 100\n";
+    out << "    " << dslRule << "\n\n";
+    out << "output:\n    grade\n";
+
+    out.close();
+    Lexer lexer("../samples/generated.intent");
     Parser parser(lexer);
     ASTNode* ast = parser.parseProgram();
 
