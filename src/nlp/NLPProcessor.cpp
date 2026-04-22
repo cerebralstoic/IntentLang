@@ -1,5 +1,7 @@
 #include "NLPProcessor.h"
 #include <algorithm>
+#include <sstream>
+#include <set>
 
 using namespace std;
 string NLPProcessor::convertToDSL(const string& input) {
@@ -87,4 +89,26 @@ string NLPProcessor::convertToDSL(const string& input) {
     }
 
     return input;
+}
+
+set<string> NLPProcessor::extractVariables(const vector<string>& rules){
+
+    set<string> vars;
+    for(auto &rule: rules){
+        stringstream ss(rule);
+        string word;
+        while(ss>> word){
+
+            if(word == "if"){
+                string var;
+                ss>>var;
+                vars.insert(var);
+            }
+            if(word == "range"){
+                string var;
+            }
+        }
+    }
+
+    return vars;
 }
