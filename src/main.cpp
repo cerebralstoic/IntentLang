@@ -3,11 +3,17 @@
 #include "semantic/SemanticAnalyzer.h"
 #include "ir/IRGenerator.h"
 #include "codegen/CGenerator.h"
-#include <iostream>
 #include "nlp/NLPProcessor.h"
+
+#include <iostream>
 #include <fstream>
+#include <vector>
+#include <set>
+
+using namespace std;
 
 int main() {
+
     NLPProcessor nlp;
 
     vector<string> inputs;
@@ -30,23 +36,40 @@ int main() {
         dslRules.push_back(rule);
     }
 
+    set<string> variables = nlp.extractVariables(dslRules);
+
+    if (variables.empty()) {
+        variables.insert("marks");
+    }
+
     ofstream out("../samples/generated.intent");
 
     out << "goal: test\n\n";
-    out << "input:\n    int marks\n\n";
+
+    out << "input:\n";
+    for (auto &var : variables) {
+        out << "    int " << var << "\n";
+    }
+    out << "\n";
 
     out << "constraints:\n";
-    bool hasRange = false;
 
-    for (auto &rule : dslRules) {
-        if (rule.find("range") != string::npos)
-            hasRange = true;
+    for (auto &var : variables) {
+
+        bool hasVarRange = false;
+
+        for (auto &rule : dslRules) {
+            if (rule.find(var + " range") != string::npos) {
+                hasVarRange = true;
+                break;
+            }
+        }
+
+        if (!hasVarRange) {
+            out << "    " << var << " range 0 to 100\n";
+        }
     }
-    
-    if (!hasRange) {
-        out << "    marks range 0 to 100\n";
-    }
-    
+
     for (auto &rule : dslRules) {
         out << "    " << rule << "\n";
     }
@@ -55,11 +78,12 @@ int main() {
     out << "output:\n    grade\n";
 
     out.close();
+
     Lexer lexer("../samples/generated.intent");
     Parser parser(lexer);
     ASTNode* ast = parser.parseProgram();
 
-    std::cout << "Parsing successful.\n";
+    cout << "Parsing successful.\n";
 
     SemanticAnalyzer sem;
     sem.analyze(ast);
@@ -72,6 +96,7 @@ int main() {
     gen.generate(ast);
     gen.writeToFile("output.c");
 
-    std::cout << "\nC code generated: output.c\n";
+    cout << "\nC code generated: output.c\n";
+
     return 0;
 }
