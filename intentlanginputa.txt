@@ -1,0 +1,9 @@
+Marks between 0 and 100
+If marks greater than 85 then assign grade A
+If attendance less than 75 then fail
+If marks greater than 70 then assign grade B
+Otherwise assign grade C
+END
+
+
+g++ main.cpp lexer/Lexer.cpp parser/Parser.cpp semantic/SemanticAnalyzer.cpp ir/IRGenerator.cpp codegen/CGenerator.cpp nlp/NLPProcessor.cpp -o intentlang
